@@ -12,12 +12,12 @@ final class Machine
         'JUICE' => 1.0,
         'WATER' => 0.65,
     ];
-    private array $productInventory = [
+    private array $availableItems = [
         'SODA' => 1,
         'JUICE' => 1,
         'WATER' => 1,
     ];
-    private array $bank = [
+    private array $availableChange = [
         1 => 0,
         0.25 => 0,
         0.10 => 0,
@@ -30,7 +30,7 @@ final class Machine
         $pendingChange = $moneyInserted - $this->productPrices[$product];
         $response = [];
         if ($pendingChange >= 0) {
-            $this->productInventory[$product]--;
+            $this->availableItems[$product]--;
             array_push($response, $product);
         }
         if ($pendingChange > 0) {
@@ -41,7 +41,7 @@ final class Machine
                 $pendingChange = \round($pendingChange, 2);
                 if ($pendingChange >= $coin) {
                     $pendingChange -= $coin;
-                    $this->bank[$coin]--;
+                    $this->availableChange[$coin]--;
                     array_push($response, $coin);
                 } else {
                     array_pop($usableCoins);
