@@ -17,29 +17,31 @@ final class Machine
         'JUICE' => 1,
         'WATER' => 1,
     ];
-
-    public function insert(float $coin): void
-    {
-        array_push($this->coinBuffer, $coin);
-    }
+    private array $bank = [
+        1 => 0,
+        0.25 => 0,
+        0.10 => 0,
+        0.05 => 0
+    ];
 
     public function get(string $product): array
     {
         $moneyInserted = \array_sum($this->coinBuffer);
-        $change = $moneyInserted - $this->productPrices[$product];
+        $pendingChange = $moneyInserted - $this->productPrices[$product];
         $response = [];
-        if ($change >= 0) {
+        if ($pendingChange >= 0) {
             $this->productInventory[$product]--;
             array_push($response, $product);
         }
-        if ($change > 0) {
+        if ($pendingChange > 0) {
             $usableCoins = self::$coins;
             sort($usableCoins);
-            while ($change >= min($usableCoins)) {
+            while ($pendingChange >= min($usableCoins)) {
                 $coin = \round(max($usableCoins), 2);
-                $change = \round($change, 2);
-                if ($change >= $coin) {
-                    $change -= $coin;
+                $pendingChange = \round($pendingChange, 2);
+                if ($pendingChange >= $coin) {
+                    $pendingChange -= $coin;
+                    $this->bank[$coin]--;
                     array_push($response, $coin);
                 } else {
                     array_pop($usableCoins);
@@ -50,6 +52,11 @@ final class Machine
         return $response;
     }
 
+    public function insert(float $coin): void
+    {
+        array_push($this->coinBuffer, $coin);
+    }
+
     public function returnCoin(): array
     {
         $response = $this->coinBuffer;
@@ -58,4 +65,8 @@ final class Machine
         return $response;
     }
 
+    public function service(array $change, array $inventory): bool
+    {
+        return true;
+    }
 }

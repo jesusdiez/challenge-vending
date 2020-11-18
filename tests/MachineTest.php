@@ -31,4 +31,16 @@ class MachineTest extends TestCase
 
         self::assertEquals(['WATER', 0.25, 0.10], $machine->get('WATER'));
     }
+
+    public function testService(): void
+    {
+        $change = [0.05 => 50, 0.1 => 50, 0.25 => 50, 1 => 25];
+        $inventory = [
+            'SODA' => 20,
+            'JUICE' => 20,
+            'WATER' => 20,
+        ];
+        $machine = new Machine();
+        self::assertTrue($machine->service($change, $inventory));
+    }
 }
