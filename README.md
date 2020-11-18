@@ -1,95 +1,50 @@
-# PHP and PHPUnit Kata Bootstrap
-1 minute setup to start practicing a kata 
-## TL;DR
+# Vending Machine
 
-    git clone https://github.com/CodiumTeam/php-kata-bootstrap
-    cd php-kata-bootstrap
-First option: I already have installed PHP 7.4 and composer
+## Problem definition
+The goal of this program is to model a vending machine and the state it must maintain during its operation. How exactly the actions on the machine are driven is left intentionally vague and is up to the candidate
 
-    make dependencies
-    make tests
-    make coverage
+The machine works like all vending machines: it takes money then gives you items. The vending machine accepts money in the form of 0.05, 0.10, 0.25 and 1
 
-Second option: I already have installed docker
+You must have at least have 3 primary items that cost 0.65, 1.00, and 1.50. Also user may hit the button “return coin” to get back the money they’ve entered so far, If you put more money in than the item price, you get the item and change back.
 
-    make docker-build
-    make docker-tests
-    make docker-coverage
+## Specification
 
-## Goal
-- Simplify the setup of a PHP environment for katas
-- Tests running in seconds
-- Setup with or without docker
-- Tutorial to run the tests inside PhpStorm
- 
-## Content
-- PHP 7.4
-- PHPUnit 9 (Compatible with PHP 7.3 and 7.4)
-- First PHPUnit test
-- Phpstorm settings
+### Valid set of actions on the vending machine are:
 
-# 0. Prerequisites
-- [Docker](https://docs.docker.com/engine/installation/)
-- [PhpStorm](https://www.jetbrains.com/phpstorm/download) with docker support (>= 2016.3) Optional
+* 0.05, 0.10, 0.25, 1 - insert money
+* Return Coin - returns all inserted money
+* GET Water, GET Juice, GET Soda - select item (Water = 0.65, Juice = 1.00, Soda = 1.50)
+* SERVICE - a service person opens the machine and set the available change and how many items we have.
 
-# 1. Prepare the setup
-## 1.1. With docker
-    make docker-build
+### Valid set of responses on the vending machine are:
 
-## 1.2. Without docker
+* 0.05, 0.10, 0.25 - return coin
+* Water,  Juice, Soda - vend item
 
-    make dependencies
-    
-# 2. Tests
-## 2.1. Command line with docker
-    make docker-tests
-## 2.2. Command line without docker
-    make tests
-## 2.3. PHPStorm with docker
-### 2.3.1. Configure docker
-Follow the instructions according your [operating system](https://blog.jetbrains.com/phpstorm/2015/10/docker-support-in-phpstorm/)
+### Vending machine must track the following state:
 
-In linux is:
+* Available items - each item has a count, a price and selector
+* Available change - Number os coins available
+* Currently inserted money
 
-    Open: Preferences
-    Click: Build, execution, deployment | Docker
-    Click: +
-    Write: API Url: unix:///var/run/docker.sock
-    Write: Docker compose executable: /usr/local/bin/docker-compose 
+## Examples 
+```
+Example 1: Buy Soda with exact change
+1, 0.25, 0.25, GET-SODA
+-> SODA
 
-In Mac is:
+Example 2: Start adding money, but user ask for return coin
+0.10, 0.10, RETURN-COIN
+-> 0.10, 0.10
 
-    Open: Preferences
-    Click: Build, execution, deployment | Docker
-    Click: +
-    Click: Docker for Mac
-### 2.3.2. Configure Interpreter
-    Click: Languages & Frameworks | PHP 
-    Click: CLI Interpreter | ...
-    Click: + | From Docker, Vagrant...
-    Select: Remote | Docker
-    Write: Image name: php-docker-bootstrap
-    Write: Php interpreter: php
-    Write: Name: Docker PHP 7.4
-### 2.3.3. Configure PHPUnit
-    Click: Languages & Frameworks | PHP | Test Frameworks 
-    Click: + | By Remote Interpreter
-    Select: Cli interpreter: Docker PHP 7.4
-    Click: PHP Unit library: Use composer autoloader
-    Write: Path to script: vendor/autoloader.php
-### 2.3.4. Run
-    Right click: tests folder | Run 'tests'
+Example 3: Buy Water without exact change
+1, GET-WATER
+-> WATER, 0.25, 0.10
+```
 
-# 3. Code coverage
-## 3.1. Command line with docker
-    make docker-coverage
-## 3.2. Command line without docker
-    make coverage
-##  3.3. PHPStorm 
-    Right click: tests folder | Run 'tests with Coverage'
-# 4. Use another PHP Version
-If you want to use other version of PHP it's as easy as follow the steps:
-- Edit Dockerfile
-- Select a valid version of PHP from [Docker Hub](https://hub.docker.com/_/php/)
-- Follow the "Prepare setup" steps
-- Validate the composer.json to verify all the requisites are satisfied.
+
+# Solution
+
+## Base environment
+
+The base for the solution is the [Codium's PHP and PHPUnit Kata Bootstrap](https://github.com/CodiumTeam/php-kata-bootstrap), and all its info can be found on the `ENV.md` file. 

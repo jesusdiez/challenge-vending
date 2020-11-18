@@ -1,15 +1,15 @@
 {
-  "name": "codiumteam/setup-kata-php",
+  "name": "jesusdiez/challenge-vending",
   "require": {
-    "php": "^7.4 | ^8.0"
+    "php": "^7.4"
   },
   "require-dev": {
     "phpunit/phpunit": "^9"
   },
   "autoload": {
     "psr-4": {
-      "Kata\\": "src",
-      "Kata\\Tests\\": "tests"
+      "Vending\\": "src",
+      "Vending\\Tests\\": "tests"
     }
   }
 }
