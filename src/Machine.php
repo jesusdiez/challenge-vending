@@ -7,14 +7,14 @@ final class Machine
 {
     private array $coinBuffer = [];
     private array $productPrices = [
-        'SODA' => 150,
-        'JUICE' => 100,
-        'WATER' => 65,
+        Item::SODA => 150,
+        Item::JUICE => 100,
+        Item::WATER => 65,
     ];
     private array $availableItems = [
-        'SODA' => 1,
-        'JUICE' => 1,
-        'WATER' => 1,
+        Item::SODA => 1,
+        Item::JUICE => 1,
+        Item::WATER => 1,
     ];
     private array $availableChange = [
         Coin::UNIT => 0,

@@ -72,5 +72,4 @@ class CoinTest extends TestCase
             ['0.10'],
         ];
     }
-
 }
