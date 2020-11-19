@@ -9,7 +9,9 @@
   "autoload": {
     "psr-4": {
       "Vending\\": "src",
-      "Vending\\Tests\\": "tests"
+      "Vending\\Tests\\": "tests",
+      "Lib\\": "lib",
+      "Lib\\Tests\\": "lib/tests"
     }
   }
 }

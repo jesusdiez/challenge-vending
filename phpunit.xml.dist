@@ -3,11 +3,16 @@
   <coverage>
     <include>
       <directory>src</directory>
+      <directory>lib</directory>
     </include>
+    <exclude>
+      <directory>lib/tests</directory>
+    </exclude>
   </coverage>
   <testsuites>
     <testsuite name="All tests">
       <directory>tests</directory>
+      <directory>lib/tests</directory>
     </testsuite>
   </testsuites>
 </phpunit>
