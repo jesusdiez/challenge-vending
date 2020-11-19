@@ -14,10 +14,9 @@ final class Machine
         Coin::CENT5 => 0,
     ];
 
-    public function __construct()
+    public function __construct(Inventory $inventory)
     {
-        $inventoryItems = array_combine(Item::values(), array_fill(0, count(Item::values()), 1));
-        $this->inventory = new Inventory($inventoryItems);
+        $this->inventory = $inventory;
     }
 
     public function get(Item $item): array

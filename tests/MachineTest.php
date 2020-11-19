@@ -5,47 +5,51 @@ namespace Vending\Tests;
 
 use RuntimeException;
 use Vending\Coin;
+use Vending\Inventory;
 use Vending\Item;
 use Vending\Machine;
 use PHPUnit\Framework\TestCase;
 
 class MachineTest extends TestCase
 {
+    private Machine $sut;
+
+    protected function setUp(): void
+    {
+        $inventoryItems = array_combine(Item::values(), array_fill(0, count(Item::values()), 1));
+        $this->sut = new Machine(new Inventory($inventoryItems));
+    }
+
     public function testBuySodaWithExactChange(): void
     {
-        $machine = new Machine();
-        $machine->insert(Coin::fromString('1'));
-        $machine->insert(Coin::fromString('0.25'));
-        $machine->insert(Coin::fromString('0.25'));
-        self::assertEquals(['SODA'], $machine->get(Item::SODA()));
+        $this->sut->insert(Coin::fromString('1'));
+        $this->sut->insert(Coin::fromString('0.25'));
+        $this->sut->insert(Coin::fromString('0.25'));
+        self::assertEquals(['SODA'], $this->sut->get(Item::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
     {
-        $machine = new Machine();
-        $machine->insert(Coin::fromString('0.10'));
-        $machine->insert(Coin::fromString('0.10'));
+        $this->sut->insert(Coin::fromString('0.10'));
+        $this->sut->insert(Coin::fromString('0.10'));
 
-        self::assertEquals([0.10, 0.10], $machine->returnCoin());
+        self::assertEquals([0.10, 0.10], $this->sut->returnCoin());
     }
 
     public function testBuyWaterWithouthExactChange(): void
     {
-        $machine = new Machine();
-        $machine->insert(Coin::fromString('1'));
+        $this->sut->insert(Coin::fromString('1'));
 
-        self::assertEquals(['WATER', 0.25, 0.10], $machine->get(Item::WATER()));
+        self::assertEquals(['WATER', 0.25, 0.10], $this->sut->get(Item::WATER()));
     }
 
     public function testUnableToSellWhenNoItemStock(): void
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('No Stock!');
-        $machine = new Machine();
-        $machine->insert(Coin::UNIT());
-        $machine->get(Item::WATER());
-        $machine->insert(Coin::UNIT());
-        $machine->get(Item::WATER());
+        $this->sut = new Machine(new Inventory());
+        $this->sut->insert(Coin::UNIT());
+        $this->sut->get(Item::WATER());
     }
 
     public function testService(): void
@@ -56,7 +60,6 @@ class MachineTest extends TestCase
             'JUICE' => 20,
             'WATER' => 20,
         ];
-        $machine = new Machine();
-        self::assertTrue($machine->service($change, $inventory));
+        self::assertTrue($this->sut->service($change, $inventory));
     }
 }
