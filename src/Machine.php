@@ -5,12 +5,11 @@ namespace Vending;
 
 final class Machine
 {
-    private static array $coins = [1, 0.25, 0.10, 0.05];
     private array $coinBuffer = [];
     private array $productPrices = [
-        'SODA' => 1.5,
-        'JUICE' => 1.0,
-        'WATER' => 0.65,
+        'SODA' => 150,
+        'JUICE' => 100,
+        'WATER' => 65,
     ];
     private array $availableItems = [
         'SODA' => 1,
@@ -18,10 +17,10 @@ final class Machine
         'WATER' => 1,
     ];
     private array $availableChange = [
-        1 => 0,
-        0.25 => 0,
-        0.10 => 0,
-        0.05 => 0
+        Coin::UNIT => 0,
+        Coin::CENT25 => 0,
+        Coin::CENT10 => 0,
+        Coin::CENT5 => 0,
     ];
 
     public function get(string $product): array
@@ -34,11 +33,10 @@ final class Machine
             array_push($response, $product);
         }
         if ($pendingChange > 0) {
-            $usableCoins = self::$coins;
+            $usableCoins = Coin::values();
             sort($usableCoins);
             while ($pendingChange >= min($usableCoins)) {
-                $coin = \round(max($usableCoins), 2);
-                $pendingChange = \round($pendingChange, 2);
+                $coin = max($usableCoins);
                 if ($pendingChange >= $coin) {
                     $pendingChange -= $coin;
                     $this->availableChange[$coin]--;
@@ -52,7 +50,7 @@ final class Machine
         return $response;
     }
 
-    public function insert(float $coin): void
+    public function insert(Coin $coin): void
     {
         array_push($this->coinBuffer, $coin);
     }
