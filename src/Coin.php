@@ -44,6 +44,16 @@ final class Coin
         return \in_array($value, self::values());
     }
 
+    public function __toString(): string
+    {
+        return number_format($this->value() / 100, 2, '.', ',');
+    }
+
+    public function value(): int
+    {
+        return $this->value;
+    }
+
     private function guardIsValid(int $value)
     {
         if (!self::isValid($value)) {

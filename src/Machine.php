@@ -25,8 +25,8 @@ final class Machine
 
     public function get(string $product): array
     {
-        $moneyInserted = \array_sum($this->coinBuffer);
-        $pendingChange = $moneyInserted - $this->productPrices[$product];
+        $totalInserted = \array_reduce($this->coinBuffer, fn($carry, $coin) => $carry + $coin->value(), 0);
+        $pendingChange = $totalInserted - $this->productPrices[$product];
         $response = [];
         if ($pendingChange >= 0) {
             $this->availableItems[$product]--;
@@ -40,7 +40,7 @@ final class Machine
                 if ($pendingChange >= $coin) {
                     $pendingChange -= $coin;
                     $this->availableChange[$coin]--;
-                    array_push($response, $coin);
+                    array_push($response, (string) $coin/100);
                 } else {
                     array_pop($usableCoins);
                 }
@@ -57,7 +57,7 @@ final class Machine
 
     public function returnCoin(): array
     {
-        $response = $this->coinBuffer;
+        $response = array_map(fn($coin) => (string) $coin, $this->coinBuffer);
         $this->coinBuffer = [];
 
         return $response;
