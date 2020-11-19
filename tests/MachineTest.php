@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Vending\Tests;
 
+use RuntimeException;
 use Vending\Coin;
+use Vending\Item;
 use Vending\Machine;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +17,7 @@ class MachineTest extends TestCase
         $machine->insert(Coin::fromString('1'));
         $machine->insert(Coin::fromString('0.25'));
         $machine->insert(Coin::fromString('0.25'));
-        self::assertEquals(['SODA'], $machine->get('SODA'));
+        self::assertEquals(['SODA'], $machine->get(Item::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
@@ -32,7 +34,18 @@ class MachineTest extends TestCase
         $machine = new Machine();
         $machine->insert(Coin::fromString('1'));
 
-        self::assertEquals(['WATER', 0.25, 0.10], $machine->get('WATER'));
+        self::assertEquals(['WATER', 0.25, 0.10], $machine->get(Item::WATER()));
+    }
+
+    public function testUnableToSellWhenNoItemStock(): void
+    {
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessage('No Stock!');
+        $machine = new Machine();
+        $machine->insert(Coin::UNIT());
+        $machine->get(Item::WATER());
+        $machine->insert(Coin::UNIT());
+        $machine->get(Item::WATER());
     }
 
     public function testService(): void
