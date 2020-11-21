@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Vending\Tests;
 
-use Vending\Changer;
 use PHPUnit\Framework\TestCase;
+use Vending\Changer;
 use Vending\Coin;
+use Vending\Money;
 
 class ChangerTest extends TestCase
 {
@@ -19,7 +20,7 @@ class ChangerTest extends TestCase
     public function testChange()
     {
         $expected = [Coin::UNIT(), Coin::CENT25(), Coin::CENT10(), Coin::CENT5()];
-        $actual = $this->sut->change(140);
+        $actual = $this->sut->change(Money::fromString('1.40'));
 
         self::assertEquals($expected, $actual);
     }

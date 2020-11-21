@@ -48,6 +48,6 @@ class InventoryTest extends TestCase
     public function testPriceControl(): void
     {
         $item = Item::WATER();
-        self::assertIsInt($this->sut->price($item));
+        self::assertInstanceOf(Money::class, $this->sut->price($item));
     }
 }

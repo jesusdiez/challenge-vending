@@ -20,11 +20,16 @@ final class Coin extends Enum
 
     public static function fromString(string $value): self
     {
-        return new self((int) ((float) $value * 100));
+        return new self(Money::fromString($value)->amountInCents());
     }
 
     public function __toString(): string
     {
-        return number_format($this->value() / 100, 2, '.', ',');
+        return (string) Money::fromInt($this->value());
+    }
+
+    public function moneyValue(): Money
+    {
+        return Money::fromInt($this->value());
     }
 }

@@ -20,17 +20,20 @@ final class Machine
         if (!$this->inventory->has($item)) {
             throw new \RuntimeException('No Stock!');
         }
-        $totalInserted = \array_reduce($this->coinBuffer, fn($carry, $coin) => $carry + $coin->value(), 0);
-        $pendingChange = $totalInserted - $this->inventory->price($item);
+        $totalInserted = \array_reduce(
+            $this->coinBuffer,
+            fn(Money $carry, Coin $coin) => $carry->add($coin->moneyValue()), Money::fromInt(0)
+        );
+        $pendingChange = $totalInserted->substract($this->inventory->price($item));
         $response = [];
-        if ($pendingChange >= 0) {
+        if ($pendingChange->amountInCents() >= 0) {
             $this->inventory->sell($item);
             array_push($response, $item->value());
         }
-        if ($pendingChange > 0) {
+        if ($pendingChange->amountInCents() > 0) {
             $response = array_merge(
                 $response,
-                array_map(fn(Coin $c) => $c->value() / 100, $this->changer->change($pendingChange))
+                array_map(fn(Coin $c) => (string) $c, $this->changer->change($pendingChange))
             );
         }
 

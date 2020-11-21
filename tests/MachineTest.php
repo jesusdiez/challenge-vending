@@ -36,11 +36,11 @@ class MachineTest extends TestCase
         self::assertEquals([0.10, 0.10], $this->sut->returnCoin());
     }
 
-    public function testBuyWaterWithouthExactChange(): void
+    public function testBuyWaterWithChange(): void
     {
         $this->sut->insert(Coin::fromString('1'));
 
-        self::assertEquals(['WATER', 0.25, 0.10], $this->sut->get(Item::WATER()));
+        self::assertEquals(['WATER', '0.25', '0.10'], $this->sut->get(Item::WATER()));
     }
 
     public function testUnableToSellWhenNoItemStock(): void

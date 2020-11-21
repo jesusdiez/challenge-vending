@@ -17,6 +17,11 @@ final class Money
         return new self((int) \round((float) $value * 100, 2));
     }
 
+    public static function fromInt(int $amountInCents): self
+    {
+        return new self($amountInCents);
+    }
+
     public function amountInCents(): int
     {
         return $this->amountInCents;
@@ -25,5 +30,15 @@ final class Money
     public function __toString(): string
     {
         return number_format($this->amountInCents() / 100, 2, '.', ',');
+    }
+
+    public function add(Money $money): Money
+    {
+        return new Money($this->amountInCents + $money->amountInCents());
+    }
+
+    public function substract(Money $money)
+    {
+        return new Money($this->amountInCents - $money->amountInCents());
     }
 }

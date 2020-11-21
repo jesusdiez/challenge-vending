@@ -13,18 +13,18 @@ final class Changer
     ];
 
     /** @return array|Coin[] */
-    public function change(int $amount): array
+    public function change(Money $amount): array
     {
         $pendingChange = $amount;
         $response = [];
         $usableCoins = Coin::values();
         sort($usableCoins);
-        while ($pendingChange >= min($usableCoins)) {
-            $coin = max($usableCoins);
-            if ($pendingChange >= $coin) {
-                $pendingChange -= $coin;
-                $this->availableChange[$coin]--;
-                array_push($response, Coin::fromString((string) ($coin/100)));
+        while ($pendingChange->amountInCents() >= min($usableCoins)) {
+            $coinAmountInCents = max($usableCoins);
+            if ($pendingChange->amountInCents() >= $coinAmountInCents) {
+                $pendingChange = $pendingChange->substract(Money::fromInt($coinAmountInCents));
+                $this->availableChange[$coinAmountInCents]--;
+                array_push($response, Coin::fromString((string) Money::fromInt($coinAmountInCents)));
             } else {
                 array_pop($usableCoins);
             }
