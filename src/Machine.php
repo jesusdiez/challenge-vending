@@ -5,18 +5,14 @@ namespace Vending;
 
 final class Machine
 {
-    private array $coinBuffer = [];
     private Inventory $inventory;
-    private array $availableChange = [
-        Coin::UNIT => 0,
-        Coin::CENT25 => 0,
-        Coin::CENT10 => 0,
-        Coin::CENT5 => 0,
-    ];
+    private array $coinBuffer = [];
+    private Changer $changer;
 
     public function __construct(Inventory $inventory)
     {
         $this->inventory = $inventory;
+        $this->changer = new Changer();
     }
 
     public function get(Item $item): array
@@ -24,7 +20,6 @@ final class Machine
         if (!$this->inventory->has($item)) {
             throw new \RuntimeException('No Stock!');
         }
-
         $totalInserted = \array_reduce($this->coinBuffer, fn($carry, $coin) => $carry + $coin->value(), 0);
         $pendingChange = $totalInserted - $this->inventory->price($item);
         $response = [];
@@ -33,18 +28,10 @@ final class Machine
             array_push($response, $item->value());
         }
         if ($pendingChange > 0) {
-            $usableCoins = Coin::values();
-            sort($usableCoins);
-            while ($pendingChange >= min($usableCoins)) {
-                $coin = max($usableCoins);
-                if ($pendingChange >= $coin) {
-                    $pendingChange -= $coin;
-                    $this->availableChange[$coin]--;
-                    array_push($response, (string) $coin / 100);
-                } else {
-                    array_pop($usableCoins);
-                }
-            }
+            $response = array_merge(
+                $response,
+                array_map(fn(Coin $c) => $c->value() / 100, $this->changer->change($pendingChange))
+            );
         }
 
         return $response;
