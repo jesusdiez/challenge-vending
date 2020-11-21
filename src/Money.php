@@ -5,11 +5,11 @@ namespace Vending;
 
 final class Money
 {
-    private int $amountInCents;
+    private int $cents;
 
-    private function __construct(int $amountInCents)
+    private function __construct(int $cents)
     {
-        $this->amountInCents = $amountInCents;
+        $this->cents = $cents;
     }
 
     public static function fromString(string $value): self
@@ -22,28 +22,28 @@ final class Money
         return new self($amountInCents);
     }
 
-    public function amountInCents(): int
+    public function cents(): int
     {
-        return $this->amountInCents;
+        return $this->cents;
     }
 
     public function __toString(): string
     {
-        return number_format($this->amountInCents() / 100, 2, '.', ',');
+        return number_format($this->cents() / 100, 2, '.', ',');
     }
 
     public function add(Money $money): self
     {
-        return new self($this->amountInCents + $money->amountInCents());
+        return new self($this->cents + $money->cents());
     }
 
     public function substract(Money $money): self
     {
-        return new self($this->amountInCents - $money->amountInCents());
+        return new self($this->cents - $money->cents());
     }
 
     public function multiply(int $multiplier): self
     {
-        return new self($this->amountInCents * $multiplier);
+        return new self($this->cents * $multiplier);
     }
 }

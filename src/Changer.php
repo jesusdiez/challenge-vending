@@ -19,9 +19,9 @@ final class Changer
         $response = [];
         $usableCoins = Coin::values();
         sort($usableCoins);
-        while ($pendingChange->amountInCents() >= min($usableCoins)) {
+        while ($pendingChange->cents() >= min($usableCoins)) {
             $coinAmountInCents = max($usableCoins);
-            if ($pendingChange->amountInCents() >= $coinAmountInCents) {
+            if ($pendingChange->cents() >= $coinAmountInCents) {
                 $pendingChange = $pendingChange->substract(Money::fromInt($coinAmountInCents));
                 $this->availableChange[$coinAmountInCents]--;
                 array_push($response, Coin::fromString((string) Money::fromInt($coinAmountInCents)));

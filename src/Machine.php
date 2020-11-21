@@ -24,11 +24,11 @@ final class Machine
         $totalInserted = $this->coinPurse->total();
         $pendingChange = $totalInserted->substract($this->inventory->price($item));
         $response = [];
-        if ($pendingChange->amountInCents() >= 0) {
+        if ($pendingChange->cents() >= 0) {
             $this->inventory->sell($item);
             array_push($response, $item->value());
         }
-        if ($pendingChange->amountInCents() > 0) {
+        if ($pendingChange->cents() > 0) {
             $response = array_merge(
                 $response,
                 array_map(fn(Coin $c) => (string) $c, $this->changer->change($pendingChange))

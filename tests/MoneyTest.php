@@ -15,7 +15,7 @@ class MoneyTest extends TestCase
 
     public function testExtractsCents(): void
     {
-        self::assertEquals(125, Money::fromString('1.25')->amountInCents());
+        self::assertEquals(125, Money::fromString('1.25')->cents());
     }
     
     public function testToString(): void
