@@ -9,11 +9,11 @@ final class Item
     private Money $price;
     private int $count;
 
-    public function __construct(ItemSelector $selector, Money $price, int $stock = 0)
+    public function __construct(ItemSelector $selector, Money $price, int $count = 0)
     {
         $this->selector = $selector;
         $this->price = $price;
-        $this->count = $stock;
+        $this->count = $count;
     }
 
     public function selector(): ItemSelector
