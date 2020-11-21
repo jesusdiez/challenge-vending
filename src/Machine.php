@@ -16,17 +16,19 @@ final class Machine
         $this->changer = new Changer();
     }
 
-    public function get(ItemSelector $item): array
+    public function get(ItemSelector $itemSelector): array
     {
-        if (!$this->inventory->has($item)) {
+        if (!$this->inventory->hasStock($itemSelector)) {
             throw new \RuntimeException('No Stock!');
         }
+        $item = $this->inventory->get($itemSelector);
+
         $totalInserted = $this->coinPurse->total();
-        $pendingChange = $totalInserted->substract($this->inventory->price($item));
+        $pendingChange = $totalInserted->substract($item->price());
         $response = [];
         if ($pendingChange->cents() >= 0) {
-            $this->inventory->sell($item);
-            array_push($response, $item->value());
+            $this->inventory->sell($itemSelector);
+            array_push($response, $itemSelector->value());
         }
         if ($pendingChange->cents() > 0) {
             $response = array_merge(

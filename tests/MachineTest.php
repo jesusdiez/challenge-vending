@@ -5,7 +5,7 @@ namespace Vending\Tests;
 
 use RuntimeException;
 use Vending\Coin;
-use Vending\Inventory;
+use Vending\InMemoryInventory;
 use Vending\ItemSelector;
 use Vending\Machine;
 use PHPUnit\Framework\TestCase;
@@ -16,8 +16,7 @@ class MachineTest extends TestCase
 
     protected function setUp(): void
     {
-        $inventoryItems = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
-        $this->sut = new Machine(new Inventory($inventoryItems));
+        $this->sut = new Machine($this->getInventoryWithOneItemOfEach());
     }
 
     public function testBuySodaWithExactChange(): void
@@ -47,7 +46,7 @@ class MachineTest extends TestCase
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('No Stock!');
-        $this->sut = new Machine(new Inventory());
+        $this->sut = new Machine(new InMemoryInventory());
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::WATER());
     }
@@ -61,5 +60,12 @@ class MachineTest extends TestCase
             'WATER' => 20,
         ];
         self::assertTrue($this->sut->service($change, $inventory));
+    }
+
+    private function getInventoryWithOneItemOfEach()
+    {
+        $items = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
+
+        return new InMemoryInventory($items);
     }
 }
