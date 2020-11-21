@@ -33,7 +33,7 @@ class MachineTest extends TestCase
         $this->sut->insert(Coin::fromString('0.10'));
         $this->sut->insert(Coin::fromString('0.10'));
 
-        self::assertEquals([0.10, 0.10], $this->sut->returnCoin());
+        self::assertEquals(['0.10', '0.10'], $this->sut->returnCoin());
     }
 
     public function testBuyWaterWithChange(): void

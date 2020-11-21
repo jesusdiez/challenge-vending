@@ -26,7 +26,10 @@ final class CoinPurse
         $output = array_reduce(
             array_keys($this->map),
             function (array $carry, $coinValue) {
-                return array_merge($carry, \array_fill(0, $this->map[$coinValue], (string) Money::fromInt($coinValue)));
+                return array_merge(
+                    $carry,
+                    \array_fill(0, $this->map[$coinValue], Coin::fromString((string) Money::fromInt($coinValue)))
+                );
             },
             []
         );

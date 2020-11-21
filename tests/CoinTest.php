@@ -6,11 +6,12 @@ namespace Vending\Tests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Vending\Coin;
+use Vending\Money;
 
 class CoinTest extends TestCase
 {
     /** @dataProvider providerInstantes */
-    public function testInstantiatesFromString($value): void
+    public function testInstantiatesFromString(string $value): void
     {
         self::assertInstanceOf(Coin::class, Coin::fromString($value));
     }
@@ -27,7 +28,7 @@ class CoinTest extends TestCase
     }
 
     /** @dataProvider providerFailsInstantiation */
-    public function testFailsInstantiationFromStringForWrongValues($value): void
+    public function testFailsInstantiationFromStringForWrongValues(string $value): void
     {
         self::expectException(InvalidArgumentException::class);
         self::assertInstanceOf(Coin::class, Coin::fromString($value));
@@ -44,7 +45,7 @@ class CoinTest extends TestCase
     }
 
     /** @dataProvider providerValue */
-    public function testValue($centsValue, $input): void
+    public function testValue(int $centsValue, string $input): void
     {
         self::assertEquals($centsValue, Coin::fromString($input)->value());
     }
@@ -59,7 +60,7 @@ class CoinTest extends TestCase
     }
 
     /** @dataProvider providerToString */
-    public function testToString($input): void
+    public function testToString(string $input): void
     {
         self::assertEquals($input, (string) Coin::fromString($input));
     }
@@ -71,5 +72,11 @@ class CoinTest extends TestCase
             ['0.25'],
             ['0.10'],
         ];
+    }
+
+    /** @dataProvider providerToString */
+    public function testMoneyValue(string $input): void
+    {
+        self::assertEquals(Money::fromString($input), Coin::fromString($input)->moneyValue());
     }
 }
