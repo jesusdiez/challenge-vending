@@ -11,24 +11,24 @@ final class Inventory
     public function __construct(array $items = [])
     {
         $this->prices = [
-            Item::JUICE => Money::fromString('1.00'),
-            Item::SODA => Money::fromString('1.50'),
-            Item::WATER => Money::fromString('0.65'),
+            ItemSelector::JUICE => Money::fromString('1.00'),
+            ItemSelector::SODA => Money::fromString('1.50'),
+            ItemSelector::WATER => Money::fromString('0.65'),
         ];
-        \array_walk($items, fn($units, $item) => $this->addStock(Item::fromString($item), $units));
+        \array_walk($items, fn($units, $item) => $this->addStock(ItemSelector::fromString($item), $units));
     }
 
-    public function has(Item $item): bool
+    public function has(ItemSelector $item): bool
     {
         return ($this->storage[$item->value()] ?? 0) > 0;
     }
 
-    public function hasPrice(Item $item): bool
+    public function hasPrice(ItemSelector $item): bool
     {
         return \array_key_exists($item->value(), $this->prices);
     }
 
-    public function sell(Item $item): void
+    public function sell(ItemSelector $item): void
     {
         if (!$this->has($item)) {
             throw new \RuntimeException('No stock');
@@ -36,12 +36,12 @@ final class Inventory
         $this->storage[$item->value()]--;
     }
 
-    public function addStock(Item $item, int $units = 1): void
+    public function addStock(ItemSelector $item, int $units = 1): void
     {
         $this->storage[$item->value()] = ($this->storage[$item->value()] ?? 0) + $units;
     }
 
-    public function price(Item $item): Money
+    public function price(ItemSelector $item): Money
     {
         if (!$this->hasPrice($item)) {
             throw new \RuntimeException('No price set for item');

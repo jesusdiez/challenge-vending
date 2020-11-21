@@ -6,7 +6,7 @@ namespace Vending\Tests;
 use RuntimeException;
 use Vending\Coin;
 use Vending\Inventory;
-use Vending\Item;
+use Vending\ItemSelector;
 use Vending\Machine;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +16,7 @@ class MachineTest extends TestCase
 
     protected function setUp(): void
     {
-        $inventoryItems = array_combine(Item::values(), array_fill(0, count(Item::values()), 1));
+        $inventoryItems = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
         $this->sut = new Machine(new Inventory($inventoryItems));
     }
 
@@ -25,7 +25,7 @@ class MachineTest extends TestCase
         $this->sut->insert(Coin::fromString('1'));
         $this->sut->insert(Coin::fromString('0.25'));
         $this->sut->insert(Coin::fromString('0.25'));
-        self::assertEquals(['SODA'], $this->sut->get(Item::SODA()));
+        self::assertEquals(['SODA'], $this->sut->get(ItemSelector::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
@@ -40,7 +40,7 @@ class MachineTest extends TestCase
     {
         $this->sut->insert(Coin::fromString('1'));
 
-        self::assertEquals(['WATER', '0.25', '0.10'], $this->sut->get(Item::WATER()));
+        self::assertEquals(['WATER', '0.25', '0.10'], $this->sut->get(ItemSelector::WATER()));
     }
 
     public function testUnableToSellWhenNoItemStock(): void
@@ -49,7 +49,7 @@ class MachineTest extends TestCase
         self::expectExceptionMessage('No Stock!');
         $this->sut = new Machine(new Inventory());
         $this->sut->insert(Coin::UNIT());
-        $this->sut->get(Item::WATER());
+        $this->sut->get(ItemSelector::WATER());
     }
 
     public function testService(): void

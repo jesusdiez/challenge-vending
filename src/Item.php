@@ -3,16 +3,36 @@ declare(strict_types=1);
 
 namespace Vending;
 
-use Lib\Enum;
-
-/**
- * @method static Item WATER()
- * @method static Item JUICE()
- * @method static Item SODA()
- */
-final class Item extends Enum
+final class Item
 {
-    public const WATER = 'WATER';
-    public const JUICE = 'JUICE';
-    public const SODA = 'SODA';
+    private ItemSelector $selector;
+    private Money $price;
+    private int $count;
+
+    public function __construct(ItemSelector $selector, Money $price, int $stock = 0)
+    {
+        $this->selector = $selector;
+        $this->price = $price;
+        $this->count = $stock;
+    }
+
+    public function selector(): ItemSelector
+    {
+        return $this->selector;
+    }
+
+    public function price(): Money
+    {
+        return $this->price;
+    }
+
+    public function count(): int
+    {
+        return $this->count;
+    }
+
+    public function setCount(int $count): void
+    {
+        $this->count = $count;
+    }
 }

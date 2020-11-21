@@ -16,7 +16,7 @@ final class Machine
         $this->changer = new Changer();
     }
 
-    public function get(Item $item): array
+    public function get(ItemSelector $item): array
     {
         if (!$this->inventory->has($item)) {
             throw new \RuntimeException('No Stock!');

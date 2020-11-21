@@ -16,8 +16,8 @@ class InventoryTest extends TestCase
 
     public function testSetStockOnCreation(): void
     {
-        $item = Item::WATER();
-        $item2 = Item::JUICE();
+        $item = ItemSelector::WATER();
+        $item2 = ItemSelector::JUICE();
         $this->sut = new Inventory(
             [
                 $item->value() => 1,
@@ -30,7 +30,7 @@ class InventoryTest extends TestCase
 
     public function testSellWithStock(): void
     {
-        $item = Item::SODA();
+        $item = ItemSelector::SODA();
         $this->sut->addStock($item);
 
         self::assertTrue($this->sut->has($item));
@@ -41,13 +41,13 @@ class InventoryTest extends TestCase
     public function testFailsSellWithNotock(): void
     {
         self::expectException(\RuntimeException::class);
-        $item = Item::SODA();
+        $item = ItemSelector::SODA();
         $this->sut->sell($item);
     }
 
     public function testPriceControl(): void
     {
-        $item = Item::WATER();
+        $item = ItemSelector::WATER();
         self::assertInstanceOf(Money::class, $this->sut->price($item));
     }
 }
