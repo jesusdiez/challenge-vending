@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending\Tests;
+namespace Vending\Tests\Domain;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Vending\Coin;
-use Vending\Money;
+use Vending\Domain\Coin;
+use Vending\Domain\Money;
 
 class CoinTest extends TestCase
 {

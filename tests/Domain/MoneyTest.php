@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending\Tests;
+namespace Vending\Tests\Domain;
 
-use Vending\Money;
 use PHPUnit\Framework\TestCase;
+use Vending\Domain\Money;
 
 class MoneyTest extends TestCase
 {

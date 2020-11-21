@@ -1,10 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending;
+namespace Vending\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Vending\Domain\Item;
+use Vending\Domain\ItemSelector;
+use Vending\Domain\Money;
+use Vending\Infrastructure\InMemoryInventory;
 
 class InMemoryInventoryTest extends TestCase
 {

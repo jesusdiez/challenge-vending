@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending;
+namespace Vending\Domain;
 
 final class Changer
 {

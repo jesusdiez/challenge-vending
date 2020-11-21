@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending;
+namespace Vending\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
+use Vending\Domain\Coin;
+use Vending\Domain\CoinPurse;
 
 class CoinPurseTest extends TestCase
 {

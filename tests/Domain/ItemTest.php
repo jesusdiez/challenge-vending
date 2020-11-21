@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending\Tests;
+namespace Vending\Tests\Domain;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Vending\ItemSelector;
+use Vending\Domain\ItemSelector;
 
 class ItemTest extends TestCase
 {

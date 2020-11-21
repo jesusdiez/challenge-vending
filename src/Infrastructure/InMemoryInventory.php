@@ -1,7 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending;
+namespace Vending\Infrastructure;
+
+use RuntimeException;
+use Vending\Domain\Inventory;
+use Vending\Domain\Item;
+use Vending\Domain\ItemSelector;
+use Vending\Domain\Money;
 
 final class InMemoryInventory implements Inventory
 {
@@ -31,7 +37,7 @@ final class InMemoryInventory implements Inventory
     public function sell(ItemSelector $itemSelector): void
     {
         if (!$this->hasStock($itemSelector)) {
-            throw new \RuntimeException('No stock');
+            throw new RuntimeException('No stock');
         }
         $item = $this->storage[$itemSelector->value()];
         $item->setCount($item->count() - 1);
@@ -57,7 +63,7 @@ final class InMemoryInventory implements Inventory
     public function get(ItemSelector $itemSelector): Item
     {
         if (!$this->hasStock($itemSelector)) {
-            throw new \RuntimeException('No stock');
+            throw new RuntimeException('No stock');
         }
         return $this->storage[$itemSelector->value()];
     }
