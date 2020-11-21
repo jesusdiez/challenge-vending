@@ -5,6 +5,12 @@ namespace Vending;
 
 use Lib\Enum;
 
+/**
+ * @method static Coin CENT5()
+ * @method static Coin CENT10()
+ * @method static Coin CENT25()
+ * @method static Coin UNIT()
+ */
 final class Coin extends Enum
 {
     public const CENT5 = 5;
