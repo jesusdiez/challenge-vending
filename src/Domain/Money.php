@@ -22,14 +22,9 @@ final class Money
         return new self($amountInCents);
     }
 
-    public function cents(): int
-    {
-        return $this->cents;
-    }
-
     public function __toString(): string
     {
-        return number_format($this->cents() / 100, 2, '.', ',');
+        return number_format($this->cents / 100, 2, '.', ',');
     }
 
     public function add(Money $money): self
@@ -37,13 +32,24 @@ final class Money
         return new self($this->cents + $money->cents());
     }
 
-    public function substract(Money $money): self
+    public function cents(): int
     {
-        return new self($this->cents - $money->cents());
+        return $this->cents;
     }
+
+    public function greaterThan(self $money): bool
+    {
+        return $this->cents > $money->cents();
+    }
+
 
     public function multiply(int $multiplier): self
     {
         return new self($this->cents * $multiplier);
+    }
+
+    public function substract(Money $money): self
+    {
+        return new self($this->cents - $money->cents());
     }
 }

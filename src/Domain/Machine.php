@@ -21,23 +21,21 @@ final class Machine
         if (!$this->inventory->hasStock($itemSelector)) {
             throw new \RuntimeException('No Stock!');
         }
+
         $item = $this->inventory->get($itemSelector);
-
         $totalInserted = $this->coinPurse->total();
-        $pendingChange = $totalInserted->substract($item->price());
-        $response = [];
-        if ($pendingChange->cents() >= 0) {
-            $this->inventory->sell($itemSelector);
-            array_push($response, $itemSelector->value());
-        }
-        if ($pendingChange->cents() > 0) {
-            $response = array_merge(
-                $response,
-                array_map(fn(Coin $c) => (string) $c, $this->changer->change($pendingChange))
-            );
+        if ($item->price()->greaterThan($totalInserted)) {
+            throw new \RuntimeException('Not enough money!');
         }
 
-        return $response;
+        $pendingChange = $totalInserted->substract($item->price());
+        if (!$this->changer->hasChange($pendingChange)) {
+            throw new \RuntimeException('Unable to provide change, insert exact change!');
+        }
+
+        $this->inventory->sell($itemSelector);
+
+        return $this->changer->change($pendingChange);
     }
 
     public function insert(Coin $coin): void

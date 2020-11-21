@@ -12,6 +12,12 @@ final class Changer
         Coin::CENT5 => 0,
     ];
 
+    public function hasChange(Money $amount): bool
+    {
+        // FIXME Implement, this must do a real system state check
+        return true;
+    }
+
     /** @return array|Coin[] */
     public function change(Money $amount): array
     {
@@ -23,6 +29,8 @@ final class Changer
             $coinAmountInCents = max($usableCoins);
             if ($pendingChange->cents() >= $coinAmountInCents) {
                 $pendingChange = $pendingChange->substract(Money::fromInt($coinAmountInCents));
+
+                // FIXME This also must use a real state check
                 $this->availableChange[$coinAmountInCents]--;
                 array_push($response, Coin::fromString((string) Money::fromInt($coinAmountInCents)));
             } else {

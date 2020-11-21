@@ -6,6 +6,7 @@ namespace Vending\Tests\Domain;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Vending\Domain\Coin;
+use Vending\Domain\Inventory;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Machine;
 use Vending\Infrastructure\InMemoryInventory;
@@ -21,25 +22,25 @@ class MachineTest extends TestCase
 
     public function testBuySodaWithExactChange(): void
     {
-        $this->sut->insert(Coin::fromString('1'));
-        $this->sut->insert(Coin::fromString('0.25'));
-        $this->sut->insert(Coin::fromString('0.25'));
-        self::assertEquals(['SODA'], $this->sut->get(ItemSelector::SODA()));
+        $this->sut->insert(Coin::UNIT());
+        $this->sut->insert(Coin::CENT25());
+        $this->sut->insert(Coin::CENT25());
+        self::assertEquals([], $this->sut->get(ItemSelector::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
     {
-        $this->sut->insert(Coin::fromString('0.10'));
-        $this->sut->insert(Coin::fromString('0.10'));
+        $this->sut->insert(Coin::CENT10());
+        $this->sut->insert(Coin::CENT10());
 
-        self::assertEquals(['0.10', '0.10'], $this->sut->returnCoin());
+        self::assertEquals([Coin::CENT10(), Coin::CENT10()], $this->sut->returnCoin());
     }
 
     public function testBuyWaterWithChange(): void
     {
-        $this->sut->insert(Coin::fromString('1'));
+        $this->sut->insert(Coin::UNIT());
 
-        self::assertEquals(['WATER', '0.25', '0.10'], $this->sut->get(ItemSelector::WATER()));
+        self::assertEquals([Coin::CENT25(), Coin::CENT10()], $this->sut->get(ItemSelector::WATER()));
     }
 
     public function testUnableToSellWhenNoItemStock(): void
@@ -53,7 +54,12 @@ class MachineTest extends TestCase
 
     public function testService(): void
     {
-        $change = [0.05 => 50, 0.1 => 50, 0.25 => 50, 1 => 25];
+        $change = [
+            0.05 => 50,
+            0.1 => 50,
+            0.25 => 50,
+            1 => 25,
+        ];
         $inventory = [
             'SODA' => 20,
             'JUICE' => 20,
@@ -62,7 +68,7 @@ class MachineTest extends TestCase
         self::assertTrue($this->sut->service($change, $inventory));
     }
 
-    private function getInventoryWithOneItemOfEach()
+    private function getInventoryWithOneItemOfEach(): Inventory
     {
         $items = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
 
