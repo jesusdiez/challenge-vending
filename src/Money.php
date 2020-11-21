@@ -32,13 +32,18 @@ final class Money
         return number_format($this->amountInCents() / 100, 2, '.', ',');
     }
 
-    public function add(Money $money): Money
+    public function add(Money $money): self
     {
-        return new Money($this->amountInCents + $money->amountInCents());
+        return new self($this->amountInCents + $money->amountInCents());
     }
 
-    public function substract(Money $money)
+    public function substract(Money $money): self
     {
-        return new Money($this->amountInCents - $money->amountInCents());
+        return new self($this->amountInCents - $money->amountInCents());
+    }
+
+    public function multiply(int $multiplier): self
+    {
+        return new self($this->amountInCents * $multiplier);
     }
 }

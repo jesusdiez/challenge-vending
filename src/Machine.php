@@ -6,12 +6,13 @@ namespace Vending;
 final class Machine
 {
     private Inventory $inventory;
-    private array $coinBuffer = [];
+    private CoinPurse $coinPurse;
     private Changer $changer;
 
     public function __construct(Inventory $inventory)
     {
         $this->inventory = $inventory;
+        $this->coinPurse = new CoinPurse();
         $this->changer = new Changer();
     }
 
@@ -20,10 +21,7 @@ final class Machine
         if (!$this->inventory->has($item)) {
             throw new \RuntimeException('No Stock!');
         }
-        $totalInserted = \array_reduce(
-            $this->coinBuffer,
-            fn(Money $carry, Coin $coin) => $carry->add($coin->moneyValue()), Money::fromInt(0)
-        );
+        $totalInserted = $this->coinPurse->total();
         $pendingChange = $totalInserted->substract($this->inventory->price($item));
         $response = [];
         if ($pendingChange->amountInCents() >= 0) {
@@ -42,15 +40,12 @@ final class Machine
 
     public function insert(Coin $coin): void
     {
-        array_push($this->coinBuffer, $coin);
+        $this->coinPurse->addCoin($coin);
     }
 
     public function returnCoin(): array
     {
-        $response = array_map(fn($coin) => (string) $coin, $this->coinBuffer);
-        $this->coinBuffer = [];
-
-        return $response;
+        return $this->coinPurse->flush();
     }
 
     public function service(array $change, array $inventory): bool
