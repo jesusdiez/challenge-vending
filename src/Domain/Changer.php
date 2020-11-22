@@ -31,10 +31,8 @@ final class Changer
                 array_push($changeCoins, $currentCoin);
             } else {
                 array_pop($usableCoins);
-                unset($usableCoins[$currentCoinCents]); // Should do nothing, done with the pop... more readable?
             }
         }
-        // If there's still money to change, we can not provide change
         if ($pendingChange->greaterThan(Money::fromInt(0))) {
             return null;
         }
