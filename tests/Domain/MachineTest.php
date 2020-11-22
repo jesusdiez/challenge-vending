@@ -6,9 +6,11 @@ namespace Vending\Tests\Domain;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Vending\Domain\Coin;
+use Vending\Domain\CoinHolder;
 use Vending\Domain\Inventory;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Machine;
+use Vending\Infrastructure\InMemoryCoinHolder;
 use Vending\Infrastructure\InMemoryInventory;
 
 class MachineTest extends TestCase
@@ -17,7 +19,10 @@ class MachineTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->sut = new Machine($this->getInventoryWithOneItemOfEach());
+        $this->sut = new Machine(
+            $this->getInventoryWithOneItemOfEach(),
+            $this->getCoinHolderEmpty()
+        );
     }
 
     public function testBuySodaWithExactChange(): void
@@ -47,7 +52,7 @@ class MachineTest extends TestCase
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('No Stock!');
-        $this->sut = new Machine(new InMemoryInventory());
+        $this->sut = new Machine($this->getInventoryEmpty(), $this->getCoinHolderEmpty());
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::WATER());
     }
@@ -68,10 +73,29 @@ class MachineTest extends TestCase
         self::assertTrue($this->sut->service($change, $inventory));
     }
 
+    private function getInventoryEmpty(): Inventory
+    {
+        return new InMemoryInventory();
+    }
+
     private function getInventoryWithOneItemOfEach(): Inventory
     {
         $items = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
 
         return new InMemoryInventory($items);
+    }
+
+    private function getCoinHolderEmpty(): CoinHolder
+    {
+        return new InMemoryCoinHolder();
+    }
+
+    private function getCoinHolderWithOneCoinOfEach(): CoinHolder
+    {
+        $coinHolder = new InMemoryCoinHolder();
+        $coins = Coin::values();
+        \array_walk($coins, fn($value) => $coinHolder->add(Coin::fromInt($value)));
+
+        return $coinHolder;
     }
 }

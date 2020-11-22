@@ -23,6 +23,11 @@ final class Coin extends Enum
         return new self(Money::fromString($value)->cents());
     }
 
+    public static function fromInt(int $value): self
+    {
+        return new self(Money::fromInt($value)->cents());
+    }
+
     public function __toString(): string
     {
         return (string) Money::fromInt($this->value());
