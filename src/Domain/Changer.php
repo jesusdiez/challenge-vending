@@ -5,39 +5,40 @@ namespace Vending\Domain;
 
 final class Changer
 {
-    private array $availableChange = [
-        Coin::UNIT => 0,
-        Coin::CENT25 => 0,
-        Coin::CENT10 => 0,
-        Coin::CENT5 => 0,
-    ];
+    private CoinHolder $availableCoins;
 
-    public function hasChange(Money $amount): bool
+    public function __construct(CoinHolder $availableCoins)
     {
-        // FIXME Implement, this must do a real system state check
-        return true;
+        $this->availableCoins = $availableCoins;
     }
 
-    /** @return array|Coin[] */
-    public function change(Money $amount): array
+    /** @return Coin[]|null */
+    public function change(Money $amount): ?array
     {
         $pendingChange = $amount;
-        $response = [];
-        $usableCoins = Coin::values();
+        $changeCoins = [];
+        $usableCoins = $this->availableCoins->sortedValues();
         sort($usableCoins);
-        while ($pendingChange->cents() >= min($usableCoins)) {
-            $coinAmountInCents = max($usableCoins);
-            if ($pendingChange->cents() >= $coinAmountInCents) {
-                $pendingChange = $pendingChange->substract(Money::fromInt($coinAmountInCents));
 
-                // FIXME This also must use a real state check
-                $this->availableChange[$coinAmountInCents]--;
-                array_push($response, Coin::fromString((string) Money::fromInt($coinAmountInCents)));
+        while (!empty($usableCoins) && $pendingChange->greaterOrEqualThan(Money::fromInt(min($usableCoins)))) {
+            $currentCoinCents = max($usableCoins);
+            $currentCoin = Coin::fromInt($currentCoinCents);
+            if ($pendingChange->greaterOrEqualThan($currentCoin->moneyValue())
+                && $this->availableCoins->has($currentCoin))
+            {
+                $pendingChange = $pendingChange->substract($currentCoin->moneyValue());
+                $this->availableCoins->get($currentCoin);
+                array_push($changeCoins, $currentCoin);
             } else {
                 array_pop($usableCoins);
+                unset($usableCoins[$currentCoinCents]); // Should do nothing, done with the pop... more readable?
             }
         }
+        // If there's still money to change, we can not provide change
+        if ($pendingChange->greaterThan(Money::fromInt(0))) {
+            return null;
+        }
 
-        return $response;
+        return $changeCoins;
     }
 }

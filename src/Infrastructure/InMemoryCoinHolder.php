@@ -16,17 +16,57 @@ final class InMemoryCoinHolder implements CoinHolder
         $this->map[$coin->value()] = ($this->map[$coin->value()] ?? 0) + 1;
     }
 
-    public function has(Coin $coin): bool
+    public function addArray(array $coins): void
     {
-        return ($this->map[$coin->value()] ?? 0) > 0;
+        \array_walk($coins, fn(Coin $coin) => $this->add($coin));
+    }
+
+    public function flush(): array
+    {
+        $output = $this->getAll();
+        $this->empty();;
+
+        return $output;
     }
 
     public function get(Coin $coin): void
     {
         if (!$this->has($coin)) {
-            throw new \RuntimeException('No coins');
+            throw new \RuntimeException(sprintf('No coin %s', $coin));
         }
         $this->map[$coin->value()] = ($this->map[$coin->value()] ?? 0) - 1;
+    }
+
+    public function getArray(array $coins): void
+    {
+        array_walk($coins, fn(Coin $coin) => $this->get($coin));
+    }
+
+    public function getAll(): array
+    {
+        return array_reduce(
+            array_keys($this->map),
+            function (array $carry, $coinValue) {
+                return array_merge(
+                    $carry,
+                    \array_fill(0, $this->map[$coinValue], Coin::fromString((string) Money::fromInt($coinValue)))
+                );
+            },
+            []
+        );
+    }
+
+    public function sortedValues(): array
+    {
+        $values = \array_keys($this->map);
+        sort($values);
+
+        return $values;
+    }
+
+    public function has(Coin $coin): bool
+    {
+        return ($this->map[$coin->value()] ?? 0) > 0;
     }
 
     public function total(): Money
@@ -38,20 +78,8 @@ final class InMemoryCoinHolder implements CoinHolder
         );
     }
 
-    public function flush(): array
+    private function empty(): void
     {
-        $output = array_reduce(
-            array_keys($this->map),
-            function (array $carry, $coinValue) {
-                return array_merge(
-                    $carry,
-                    \array_fill(0, $this->map[$coinValue], Coin::fromString((string) Money::fromInt($coinValue)))
-                );
-            },
-            []
-        );
         $this->map = [];
-
-        return $output;
     }
 }

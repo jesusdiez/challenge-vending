@@ -22,6 +22,13 @@ class InMemoryCoinHolderTest extends TestCase
         self::assertEquals([Coin::CENT25()], $this->sut->flush());
     }
 
+    public function testAddArrayAndFlush()
+    {
+        $coinArray = [Coin::CENT25(), Coin::CENT25(), Coin::CENT10()];
+        $this->sut->addArray($coinArray);
+        self::assertEquals($coinArray, $this->sut->flush());
+    }
+
     public function testAddMultipleAndFlush()
     {
         $this->sut->add(Coin::CENT25());

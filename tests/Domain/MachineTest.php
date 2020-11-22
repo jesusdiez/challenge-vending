@@ -21,7 +21,8 @@ class MachineTest extends TestCase
     {
         $this->sut = new Machine(
             $this->getInventoryWithOneItemOfEach(),
-            $this->getCoinHolderEmpty()
+            $this->getCoinHolderEmpty(),
+            $this->getCoinHolderWithOneCoinOfEach()
         );
     }
 
@@ -30,7 +31,7 @@ class MachineTest extends TestCase
         $this->sut->insert(Coin::UNIT());
         $this->sut->insert(Coin::CENT25());
         $this->sut->insert(Coin::CENT25());
-        self::assertEquals([], $this->sut->get(ItemSelector::SODA()));
+        self::assertEquals([ItemSelector::SODA()], $this->sut->get(ItemSelector::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
@@ -45,16 +46,32 @@ class MachineTest extends TestCase
     {
         $this->sut->insert(Coin::UNIT());
 
-        self::assertEquals([Coin::CENT25(), Coin::CENT10()], $this->sut->get(ItemSelector::WATER()));
+        self::assertEquals(
+            [ItemSelector::WATER(), Coin::CENT25(), Coin::CENT10()],
+            $this->sut->get(ItemSelector::WATER())
+        );
     }
 
     public function testUnableToSellWhenNoItemStock(): void
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('No Stock!');
-        $this->sut = new Machine($this->getInventoryEmpty(), $this->getCoinHolderEmpty());
+        $this->sut = new Machine(
+            $this->getInventoryEmpty(),
+            $this->getCoinHolderEmpty(),
+            $this->getCoinHolderWithOneCoinOfEach()
+        );
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::WATER());
+    }
+
+    public function testUnableToSellWhenNotEnoughChange(): void
+    {
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessage('Unable to provide change, insert exact change!');
+        $this->sut->insert(Coin::UNIT());
+        $this->sut->insert(Coin::UNIT());
+        $this->sut->get(ItemSelector::SODA());
     }
 
     public function testService(): void

@@ -7,7 +7,16 @@ interface CoinHolder
 {
     public function add(Coin $coin): void;
 
+    public function addArray(array $coins): void;
+
+    public function sortedValues(): array;
+
     public function get(Coin $coin): void;
+
+    /** @return array|Coin[] */
+    public function getAll(): array;
+
+    public function getArray(array $coins): void;
 
     public function total(): Money;
 
