@@ -52,6 +52,14 @@ class MachineTest extends TestCase
         );
     }
 
+    public function testUnableToBuyWhenNotEnoughMoney(): void
+    {
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessage('Not enough money!');
+        $this->sut->insert(Coin::UNIT());
+        $this->sut->get(ItemSelector::SODA());
+    }
+
     public function testUnableToSellWhenNoItemStock(): void
     {
         self::expectException(RuntimeException::class);
