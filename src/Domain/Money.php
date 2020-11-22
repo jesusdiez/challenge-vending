@@ -37,11 +37,6 @@ final class Money
         return $this->cents;
     }
 
-    public function equal(Money $money): bool
-    {
-        return $this->cents === $money->cents();
-    }
-
     public function greaterThan(self $money): bool
     {
         return $this->cents > $money->cents();
