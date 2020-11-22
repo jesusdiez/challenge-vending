@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Vending\Domain;
 
-final class CoinPurse
+final class CoinHolder
 {
     private array $map = [];
 

@@ -6,13 +6,13 @@ namespace Vending\Domain;
 final class Machine
 {
     private Inventory $inventory;
-    private CoinPurse $coinPurse;
+    private CoinHolder $coinStorage;
     private Changer $changer;
 
     public function __construct(Inventory $inventory)
     {
         $this->inventory = $inventory;
-        $this->coinPurse = new CoinPurse();
+        $this->coinStorage = new CoinHolder();
         $this->changer = new Changer();
     }
 
@@ -23,7 +23,7 @@ final class Machine
         }
 
         $item = $this->inventory->get($itemSelector);
-        $totalInserted = $this->coinPurse->total();
+        $totalInserted = $this->coinStorage->total();
         if ($item->price()->greaterThan($totalInserted)) {
             throw new \RuntimeException('Not enough money!');
         }
@@ -40,12 +40,12 @@ final class Machine
 
     public function insert(Coin $coin): void
     {
-        $this->coinPurse->addCoin($coin);
+        $this->coinStorage->addCoin($coin);
     }
 
     public function returnCoin(): array
     {
-        return $this->coinPurse->flush();
+        return $this->coinStorage->flush();
     }
 
     public function service(array $change, array $inventory): bool

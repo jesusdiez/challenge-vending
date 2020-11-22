@@ -5,15 +5,15 @@ namespace Vending\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
 use Vending\Domain\Coin;
-use Vending\Domain\CoinPurse;
+use Vending\Domain\CoinHolder;
 
-class CoinPurseTest extends TestCase
+class CoinHolderTest extends TestCase
 {
-    private CoinPurse $sut;
+    private CoinHolder $sut;
 
     protected function setUp(): void
     {
-        $this->sut = new CoinPurse();
+        $this->sut = new CoinHolder();
     }
 
     public function testAddOneAndFlush()
