@@ -6,9 +6,11 @@ namespace Vending\Tests\Domain;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Vending\Domain\Coin;
-use Vending\Domain\CoinHolder;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Machine;
+use Vending\Domain\Money;
+
+use function array_walk;
 
 class MachineTest extends TestCase
 {
@@ -17,16 +19,17 @@ class MachineTest extends TestCase
     protected function setUp(): void
     {
         $this->sut = new Machine();
-        $this->initInventory();
-        $this->initCoinHolder();
+//        $this->initInventory();
+//        $this->initCoinHolder();
     }
 
     public function testBuySodaWithExactChange(): void
     {
+        $this->sut->serviceSetItem(ItemSelector::SODA(), Money::fromString('1.50'), 1);
         $this->sut->insert(Coin::UNIT());
         $this->sut->insert(Coin::CENT25());
         $this->sut->insert(Coin::CENT25());
-        self::assertEquals([ItemSelector::SODA()], $this->sut->get(ItemSelector::SODA()));
+        self::assertEquals([], $this->sut->get(ItemSelector::SODA()));
     }
 
     public function testStartAddingMoneyButReturnCoins(): void
@@ -34,15 +37,17 @@ class MachineTest extends TestCase
         $this->sut->insert(Coin::CENT10());
         $this->sut->insert(Coin::CENT10());
 
-        self::assertEquals([Coin::CENT10(), Coin::CENT10()], $this->sut->returnCoin());
+        self::assertEquals([Coin::CENT10(), Coin::CENT10()], $this->sut->returnCoins());
     }
 
     public function testBuyWaterWithChange(): void
     {
+        $this->sut->serviceSetItem(ItemSelector::WATER(), Money::fromString('0.65'), 1);
+        $this->setOneCoinOfEach($this->sut);
         $this->sut->insert(Coin::UNIT());
 
         self::assertEquals(
-            [ItemSelector::WATER(), Coin::CENT25(), Coin::CENT10()],
+            [Coin::CENT25(), Coin::CENT10()],
             $this->sut->get(ItemSelector::WATER())
         );
     }
@@ -50,7 +55,8 @@ class MachineTest extends TestCase
     public function testUnableToBuyWhenNotEnoughMoney(): void
     {
         self::expectException(RuntimeException::class);
-        self::expectExceptionMessage('Not enough money!');
+        self::expectExceptionMessage('Not enough money to buy your item!');
+        $this->sut->serviceSetItem(ItemSelector::SODA(), Money::fromString('1.50'), 1);
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::SODA());
     }
@@ -58,12 +64,7 @@ class MachineTest extends TestCase
     public function testUnableToSellWhenNoItemStock(): void
     {
         self::expectException(RuntimeException::class);
-        self::expectExceptionMessage('No Stock!');
-        $this->sut = new Machine(
-            $this->getInventoryEmpty(),
-            $this->getCoinHolderEmpty(),
-            $this->getCoinHolderWithOneCoinOfEach()
-        );
+        self::expectExceptionMessage('No item Stock!');
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::WATER());
     }
@@ -72,55 +73,27 @@ class MachineTest extends TestCase
     {
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('Unable to provide change, insert exact change!');
+        $this->sut->serviceSetItem(ItemSelector::SODA(), Money::fromString('1.50'), 1);
         $this->sut->insert(Coin::UNIT());
         $this->sut->insert(Coin::UNIT());
         $this->sut->get(ItemSelector::SODA());
     }
 
-    public function testService(): void
+    private function setOneItemOfEach(Machine $machine): void
     {
-        $change = [
-            0.05 => 50,
-            0.1 => 50,
-            0.25 => 50,
-            1 => 25,
-        ];
-        $inventory = [
-            'SODA' => 20,
-            'JUICE' => 20,
-            'WATER' => 20,
-        ];
-        self::assertTrue($this->sut->service($change, $inventory));
+        $items = ItemSelector::values();
+        array_walk(
+            $items,
+            fn($value) => $machine->serviceSetItem(ItemSelector::fromString($value),)
+        );
     }
 
-    private function getInventoryEmpty(): Inventory
+    private function setOneCoinOfEach(Machine $machine): void
     {
-        return new Inventory();
-    }
-
-    private function getInventoryWithOneItemOfEach(): Inventory
-    {
-        $items = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
-
-        return new Inventory($items);
-    }
-
-    private function getCoinHolderEmpty(): CoinHolder
-    {
-        return new InMemoryCoinHolder();
-    }
-
-    private function getCoinHolderWithOneCoinOfEach(): CoinHolder
-    {
-        $coinHolder = new InMemoryCoinHolder();
         $coins = Coin::values();
-        \array_walk($coins, fn($value) => $coinHolder->add(Coin::fromInt($value)));
-
-        return $coinHolder;
-    }
-
-    private function initCoinHolder()
-    {
-
+        array_walk(
+            $coins,
+            fn($coinValue) => $machine->serviceSetChange(Coin::fromInt($coinValue), 1)
+        );
     }
 }

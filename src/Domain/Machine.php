@@ -12,20 +12,20 @@ class Machine
     public function __construct()
     {
         $this->inventory = new Inventory();
-        $this->storedCoins = new CoinHolder();
-        $this->liveCoins = new CoinHolder();
+        $this->storedCoins = CoinHolder::createEmpty();
+        $this->liveCoins = CoinHolder::createEmpty();
     }
 
     public function get(ItemSelector $itemSelector): array
     {
         if (!$this->inventory->hasStock($itemSelector)) {
-            throw new \RuntimeException('No Stock!');
+            throw new \RuntimeException('No item Stock!');
         }
 
         $item = $this->inventory->get($itemSelector);
         $totalInserted = $this->liveCoins->total();
         if ($item->price()->greaterThan($totalInserted)) {
-            throw new \RuntimeException('Not enough money!');
+            throw new \RuntimeException('Not enough money to buy your item!');
         }
 
         $change = [];
@@ -42,7 +42,7 @@ class Machine
         $this->storedCoins->addArray($this->liveCoins->flush());
         $this->storedCoins->retrieveArray($change);
 
-        return array_merge([$itemSelector], $change);
+        return $change;
     }
 
     public function insert(Coin $coin): void
@@ -67,7 +67,7 @@ class Machine
 
     private function allAvailableCoins(): CoinHolder
     {
-        $coins = new InMemoryCoinHolder();
+        $coins = CoinHolder::createEmpty();
         $coins->addArray($this->liveCoins->getAll());
         $coins->addArray($this->storedCoins->getAll());
 

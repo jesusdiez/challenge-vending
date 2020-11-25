@@ -7,6 +7,24 @@ final class CoinHolder
 {
     private array $map = [];
 
+    private function __construct()
+    {
+        $this->map = [];
+    }
+
+    public static function createEmpty(): self
+    {
+        return new self();
+    }
+
+    public static function fromArray(array $coins): self
+    {
+        $holder = new self();
+        $holder->addArray($coins);
+
+        return $holder;
+    }
+
     public function add(Coin $coin): void
     {
         $this->map[$coin->value()] = ($this->map[$coin->value()] ?? 0) + 1;

@@ -15,6 +15,7 @@ final class AppCli
 {
     private const RETURN_SUCCESS = 0;
     private const RETURN_FAILURE = 1;
+
     private $in;
     private $out;
     private $argv;
@@ -22,7 +23,7 @@ final class AppCli
     private MemcachedMachineRepository $repo;
     private VendingMachine $vendingMachine;
 
-    public function __construct($in, $out, $argv)
+    public function __construct($in, $out, array $argv)
     {
         $this->in = $in;
         $this->out = $out;

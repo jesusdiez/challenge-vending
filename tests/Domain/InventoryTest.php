@@ -5,32 +5,18 @@ namespace Vending\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Vending\Domain\Inventory;
 use Vending\Domain\Item;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Money;
-use Vending\Infrastructure\Inventory;
 
-class InMemoryInventoryTest extends TestCase
+class InventoryTest extends TestCase
 {
     private Inventory $sut;
 
     protected function setUp(): void
     {
         $this->sut = new Inventory();
-    }
-
-    public function testAddsItemsToInventoryOnCreation(): void
-    {
-        $itemSel = ItemSelector::WATER();
-        $itemSel2 = ItemSelector::JUICE();
-        $this->sut = new Inventory(
-            [
-                $itemSel->value() => 1,
-                $itemSel2->value() => 0,
-            ]
-        );
-        self::assertTrue($this->sut->hasStock($itemSel));
-        self::assertFalse($this->sut->hasStock($itemSel2));
     }
 
     public function testHasChecksItemExistence(): void

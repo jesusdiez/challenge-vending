@@ -29,7 +29,7 @@ class ChangerTest extends TestCase
 
     private function getCoinHolderWithOneCoinOfEach(): CoinHolder
     {
-        $coinHolder = new InMemoryCoinHolder();
+        $coinHolder = CoinHolder::createEmpty();
         $coinHolder->addArray(array_map(fn(int $coinVal): Coin => Coin::fromInt($coinVal), Coin::values()));
 
         return $coinHolder;

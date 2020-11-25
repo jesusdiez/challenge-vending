@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Vending\Tests\Infrastructure;
+namespace Vending\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
 use Vending\Domain\Coin;
-use Vending\Infrastructure\InMemoryCoinHolder;
+use Vending\Domain\CoinHolder;
 
-class InMemoryCoinHolderTest extends TestCase
+class CoinHolderTest extends TestCase
 {
-    private InMemoryCoinHolder $sut;
+    private CoinHolder $sut;
 
     protected function setUp(): void
     {
-        $this->sut = new InMemoryCoinHolder();
+        $this->sut = CoinHolder::createEmpty();
     }
 
     public function testAddOneAndFlush()
