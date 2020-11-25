@@ -77,6 +77,6 @@ class CoinTest extends TestCase
     /** @dataProvider providerToString */
     public function testMoneyValue(string $input): void
     {
-        self::assertEquals(Money::fromString($input), Coin::fromString($input)->moneyValue());
+        self::assertEquals(Money::fromString($input), Coin::fromString($input)->toMoney());
     }
 }

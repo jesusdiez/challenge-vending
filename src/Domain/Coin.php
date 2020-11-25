@@ -33,7 +33,7 @@ final class Coin extends Enum
         return (string) Money::fromInt($this->value());
     }
 
-    public function moneyValue(): Money
+    public function toMoney(): Money
     {
         return Money::fromInt($this->value());
     }

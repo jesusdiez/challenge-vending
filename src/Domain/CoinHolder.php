@@ -9,17 +9,17 @@ interface CoinHolder
 
     public function addArray(array $coins): void;
 
-    public function sortedValues(): array;
+    /** @return array|Coin[] */
+    public function flush(): array;
 
     public function get(Coin $coin): void;
 
     /** @return array|Coin[] */
     public function getAll(): array;
 
-    public function getArray(array $coins): void;
+    public function retrieveArray(array $coins): void;
+
+    public function sortedValues(): array;
 
     public function total(): Money;
-
-    /** @return array|Coin[] */
-    public function flush(): array;
 }

@@ -42,7 +42,7 @@ final class Machine
 
         $this->inventory->sell($itemSelector);
         $this->storedCoins->addArray($this->liveCoins->flush());
-        $this->storedCoins->getArray($change);
+        $this->storedCoins->retrieveArray($change);
 
         return array_merge([$itemSelector], $change);
     }
@@ -52,7 +52,7 @@ final class Machine
         $this->liveCoins->add($coin);
     }
 
-    public function returnCoin(): array
+    public function returnCoins(): array
     {
         return $this->liveCoins->flush();
     }

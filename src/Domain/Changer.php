@@ -23,10 +23,10 @@ final class Changer
         while (!empty($usableCoins) && $pendingChange->greaterOrEqualThan(Money::fromInt(min($usableCoins)))) {
             $currentCoinCents = max($usableCoins);
             $currentCoin = Coin::fromInt($currentCoinCents);
-            if ($pendingChange->greaterOrEqualThan($currentCoin->moneyValue())
+            if ($pendingChange->greaterOrEqualThan($currentCoin->toMoney())
                 && $this->availableCoins->has($currentCoin))
             {
-                $pendingChange = $pendingChange->substract($currentCoin->moneyValue());
+                $pendingChange = $pendingChange->substract($currentCoin->toMoney());
                 $this->availableCoins->get($currentCoin);
                 array_push($changeCoins, $currentCoin);
             } else {

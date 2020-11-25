@@ -37,7 +37,7 @@ final class InMemoryCoinHolder implements CoinHolder
         $this->map[$coin->value()] = ($this->map[$coin->value()] ?? 0) - 1;
     }
 
-    public function getArray(array $coins): void
+    public function retrieveArray(array $coins): void
     {
         array_walk($coins, fn(Coin $coin) => $this->get($coin));
     }
