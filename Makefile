@@ -15,13 +15,13 @@ coverage:
 # Docker commands
 docker-build:
 	docker build -t php-docker-bootstrap .
-	@docker run --rm -v ${PWD}:/opt/project php-docker-bootstrap make dependencies
+	@docker run --rm -v ${PWD}:/opt/app vendingmachine make dependencies
 
 docker-tests:
-	@docker run --rm -v ${PWD}:/opt/project php-docker-bootstrap make tests
+	@docker run --rm -v ${PWD}:/opt/app vendingmachine make tests
 
 docker-coverage:
-	@docker run --rm -v ${PWD}:/opt/project php-docker-bootstrap make coverage
+	@docker run --rm -v ${PWD}:/opt/app vendingmachine make coverage
 
 define HELP
 # Local commands
