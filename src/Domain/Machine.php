@@ -60,9 +60,9 @@ class Machine
         $this->storedCoins->set($coin, $count);
     }
 
-    public function serviceSetItems(Item $item): bool
+    public function serviceSetItem(ItemSelector $itemSelector, Money $price, int $count): void
     {
-        $this->inventory->set($item);
+        $this->inventory->set(new Item($itemSelector, $price, $count));
     }
 
     private function allAvailableCoins(): CoinHolder

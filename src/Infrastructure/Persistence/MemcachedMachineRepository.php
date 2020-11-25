@@ -18,9 +18,14 @@ class MemcachedMachineRepository implements MachineRepository
         $this->namespace = $namespace;
     }
 
-    public function get(): Machine
+    public function get(): ?Machine
     {
-        return $this->unserialize($this->memcached->get($this->key()));
+        $data = $this->memcached->get($this->key());
+        if ($data == false) {
+            return null;
+        }
+
+        return $this->unserialize($data);
     }
 
     public function persist(Machine $machine): void

@@ -5,7 +5,7 @@ namespace Vending\Domain;
 
 interface MachineRepository
 {
-    public function get(): Machine;
+    public function get(): ?Machine;
     public function persist(Machine $machine): void;
     public function delete(): void;
 }

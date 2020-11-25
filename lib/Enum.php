@@ -59,7 +59,9 @@ abstract class Enum
     protected function guardIsValid($value)
     {
         if (!static::isValid($value)) {
-            throw new InvalidArgumentException(sprintf('%s is not a valid value', (string) $value));
+            $fqdn = explode('\\', get_called_class());
+            $class = array_pop($fqdn);
+            throw new InvalidArgumentException(sprintf('Not a valid %s value.', $class));
         }
     }
 }

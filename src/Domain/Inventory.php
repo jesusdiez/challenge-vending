@@ -54,5 +54,10 @@ final class Inventory
         }
         return $this->storage[$itemSelector->value()];
     }
+
+    public function set(Item $item): void
+    {
+        $this->storage[$item->selector()->value()] = $item;
+    }
 }
 

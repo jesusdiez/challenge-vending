@@ -30,7 +30,7 @@ final class Coin extends Enum
 
     public function __toString(): string
     {
-        return (string) Money::fromInt($this->value());
+        return (string) $this->toMoney();
     }
 
     public function toMoney(): Money
