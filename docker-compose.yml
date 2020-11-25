@@ -1,0 +1,14 @@
+version: '3'
+services:
+  vendingmachine:
+    container_name: vendingmachine
+    build: .
+    volumes:
+      - .:/opt/app
+    command: tail -f /dev/null
+
+  memcached:
+    container_name: memcached
+    image: memcached:latest
+    ports:
+      - "11211:11211"

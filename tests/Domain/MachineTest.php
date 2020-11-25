@@ -7,11 +7,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Vending\Domain\Coin;
 use Vending\Domain\CoinHolder;
-use Vending\Domain\Inventory;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Machine;
-use Vending\Infrastructure\InMemoryCoinHolder;
-use Vending\Infrastructure\InMemoryInventory;
 
 class MachineTest extends TestCase
 {
@@ -19,11 +16,9 @@ class MachineTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->sut = new Machine(
-            $this->getInventoryWithOneItemOfEach(),
-            $this->getCoinHolderEmpty(),
-            $this->getCoinHolderWithOneCoinOfEach()
-        );
+        $this->sut = new Machine();
+        $this->initInventory();
+        $this->initCoinHolder();
     }
 
     public function testBuySodaWithExactChange(): void
@@ -100,14 +95,14 @@ class MachineTest extends TestCase
 
     private function getInventoryEmpty(): Inventory
     {
-        return new InMemoryInventory();
+        return new Inventory();
     }
 
     private function getInventoryWithOneItemOfEach(): Inventory
     {
         $items = array_combine(ItemSelector::values(), array_fill(0, count(ItemSelector::values()), 1));
 
-        return new InMemoryInventory($items);
+        return new Inventory($items);
     }
 
     private function getCoinHolderEmpty(): CoinHolder
@@ -122,5 +117,10 @@ class MachineTest extends TestCase
         \array_walk($coins, fn($value) => $coinHolder->add(Coin::fromInt($value)));
 
         return $coinHolder;
+    }
+
+    private function initCoinHolder()
+    {
+
     }
 }

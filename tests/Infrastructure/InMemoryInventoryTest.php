@@ -8,22 +8,22 @@ use RuntimeException;
 use Vending\Domain\Item;
 use Vending\Domain\ItemSelector;
 use Vending\Domain\Money;
-use Vending\Infrastructure\InMemoryInventory;
+use Vending\Infrastructure\Inventory;
 
 class InMemoryInventoryTest extends TestCase
 {
-    private InMemoryInventory $sut;
+    private Inventory $sut;
 
     protected function setUp(): void
     {
-        $this->sut = new InMemoryInventory();
+        $this->sut = new Inventory();
     }
 
     public function testAddsItemsToInventoryOnCreation(): void
     {
         $itemSel = ItemSelector::WATER();
         $itemSel2 = ItemSelector::JUICE();
-        $this->sut = new InMemoryInventory(
+        $this->sut = new Inventory(
             [
                 $itemSel->value() => 1,
                 $itemSel2->value() => 0,

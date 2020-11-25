@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace Vending\Domain;
 
-use Vending\Infrastructure\InMemoryCoinHolder;
-
-final class Machine
+class Machine
 {
     private Inventory $inventory;
     private CoinHolder $liveCoins;
     private CoinHolder $storedCoins;
 
-    public function __construct(Inventory $inventory, CoinHolder $liveCoins, CoinHolder $storedCoins)
+    public function __construct()
     {
-        $this->inventory = $inventory;
-        $this->storedCoins = $storedCoins;
-        $this->liveCoins = $liveCoins;
+        $this->inventory = new Inventory();
+        $this->storedCoins = new CoinHolder();
+        $this->liveCoins = new CoinHolder();
     }
 
     public function get(ItemSelector $itemSelector): array
@@ -33,7 +31,7 @@ final class Machine
         $change = [];
         $pendingChange = $totalInserted->substract($item->price());
         if ($pendingChange->greaterThan(Money::fromInt(0))) {
-            $changer = new Changer($this->allAvailableCoinsAsCoinHolder());
+            $changer = new Changer($this->allAvailableCoins());
             $change = $changer->change($pendingChange);
             if ($change === null) {
                 throw new \RuntimeException('Unable to provide change, insert exact change!');
@@ -57,12 +55,17 @@ final class Machine
         return $this->liveCoins->flush();
     }
 
-    public function service(array $change, array $inventory): bool
+    public function serviceSetChange(Coin $coin, int $count): void
     {
-        return true;
+        $this->storedCoins->set($coin, $count);
     }
 
-    private function allAvailableCoinsAsCoinHolder(): CoinHolder
+    public function serviceSetItems(Item $item): bool
+    {
+        $this->inventory->set($item);
+    }
+
+    private function allAvailableCoins(): CoinHolder
     {
         $coins = new InMemoryCoinHolder();
         $coins->addArray($this->liveCoins->getAll());

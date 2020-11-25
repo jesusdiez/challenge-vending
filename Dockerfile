@@ -1,18 +1,20 @@
 FROM php:7.4
 
-MAINTAINER Luis Rovirosa Mairlot <luis@codium.team>
+ENV MEMCACHED_DEPS libz-dev libmemcached-dev
+RUN apt-get update \
+    && apt-get install -y git unzip $MEMCACHED_DEPS \
+    && pecl install memcached \
+    && pecl install igbinary \
+    && pecl install xdebug \
+    && docker-php-ext-enable memcached \
+    && docker-php-ext-enable igbinary \
+    && docker-php-ext-enable xdebug
 
-# Composer and dependencies
-RUN apt-get update && \
-    apt-get install git unzip -y
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+VOLUME ["/opt/app"]
 
-# Volume to have access to the source code
-VOLUME ["/opt/project"]
-
-WORKDIR /opt/project
+WORKDIR /opt/app
